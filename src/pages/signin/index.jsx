@@ -1,4 +1,4 @@
-import SignIn from "../../apis/signIn";
+import SignIn from "../../components/signin";
 
 const SignInPage = () => {
     return <SignIn />;
