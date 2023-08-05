@@ -1,11 +1,10 @@
 import { useCallback, useState } from "react";
 import "./style.scss";
+import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import debounce from "../../utils/debounce";
-
-const SignUp = () => {
+const SignIn = () => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -39,10 +38,10 @@ const SignUp = () => {
         []
     );
 
-    const signUpHandler = async () => {
+    const signInHandler = async () => {
         const response = await axios({
             baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: "/auth/signup",
+            url: "/auth/signin",
             method: "POST",
             headers: {
                 ContentType: "application/json",
@@ -52,13 +51,13 @@ const SignUp = () => {
                 password,
             },
         });
-        if (response.status === 201) navigate("/signin");
+        if (response.status === 200) navigate("/todo");
     };
 
     return (
         <main className="container">
             <header>
-                <h1 className="title">회원가입</h1>
+                <h1 className="title">로그인</h1>
             </header>
             <section className="formContainer">
                 <input
@@ -76,15 +75,15 @@ const SignUp = () => {
                     data-testid="password-input"
                 />
                 <button
-                    onClick={signUpHandler}
+                    onClick={signInHandler}
                     disabled={!(isEmailPassed && isPasswordPassed)}
-                    data-testid="signup-button"
+                    data-testid="signin-button"
                 >
-                    회원가입
+                    로그인
                 </button>
             </section>
         </main>
     );
 };
 
-export default SignUp;
+export default SignIn;
