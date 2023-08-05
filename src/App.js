@@ -1,7 +1,11 @@
-import "./App.css";
+import RootRouter from "./pages";
 
-function App() {
-    return <div className="App"></div>;
-}
+const App = () => {
+    return (
+        <div className="App">
+            <RootRouter />
+        </div>
+    );
+};
 
 export default App;
