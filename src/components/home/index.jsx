@@ -1,7 +1,12 @@
 import "./style.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    const onClickButton = (path) => {
+        path === "로그인" ? navigate("/signin") : navigate("signup");
+    };
     return (
         <main className="container">
             <header>
@@ -10,13 +15,19 @@ const Home = () => {
             <nav>
                 <ul>
                     <li>
-                        <button className="button">
-                            <Link to="/signin">로그인</Link>
+                        <button
+                            className="button"
+                            onClick={() => onClickButton("로그인")}
+                        >
+                            로그인
                         </button>
                     </li>
                     <li>
-                        <button className="button">
-                            <Link to="/signup">회원가입</Link>
+                        <button
+                            className="button"
+                            onClick={() => onClickButton("회원가입")}
+                        >
+                            회원가입
                         </button>
                     </li>
                 </ul>

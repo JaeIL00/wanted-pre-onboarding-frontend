@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./style.scss";
 import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
@@ -51,8 +51,16 @@ const SignIn = () => {
                 password,
             },
         });
-        if (response.status === 200) navigate("/todo");
+        if (response.status === 200) {
+            localStorage.setItem("access_token", response.data.access_token);
+            navigate("/todo");
+        }
     };
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken) navigate("/todo");
+    }, []);
 
     return (
         <main className="container">

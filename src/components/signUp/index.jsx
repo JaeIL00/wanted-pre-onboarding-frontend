@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -54,6 +54,11 @@ const SignUp = () => {
         });
         if (response.status === 201) navigate("/signin");
     };
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken) navigate("/todo");
+    }, []);
 
     return (
         <main className="container">
