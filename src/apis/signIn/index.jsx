@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import "./style.scss";
 import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
-import { signInFetch } from "../../apis";
+import { signInFetch } from "..";
 
 const SignIn = () => {
     const navigate = useNavigate();
