@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import "./style.scss";
 import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
+import { signInFetch } from "../../apis";
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -38,7 +39,8 @@ const SignIn = () => {
     );
 
     const signInHandler = () => {
-        navigate("/todo");
+        const response = signInFetch(email, password);
+        if (response.response.status === 200) navigate("/todo");
     };
 
     return (
@@ -46,7 +48,7 @@ const SignIn = () => {
             <header>
                 <h1 className="title">로그인</h1>
             </header>
-            <form className="formContainer">
+            <section className="formContainer">
                 <input
                     type="text"
                     value={email}
@@ -68,7 +70,7 @@ const SignIn = () => {
                 >
                     로그인
                 </button>
-            </form>
+            </section>
         </main>
     );
 };
