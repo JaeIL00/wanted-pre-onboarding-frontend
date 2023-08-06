@@ -1,6 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import "./style.scss";
 import axios from "axios";
+import TodoItem from "../todoItem";
 
 const Todo = ({ accessToken }) => {
     const [addTodoText, setAddTodoText] = useState("");
@@ -41,7 +42,6 @@ const Todo = ({ accessToken }) => {
                     },
                     data: { todo: addTodoText },
                 });
-                console.log(response);
                 if (response.status === 200) {
                     setTodoList(response.data);
                 }
@@ -49,10 +49,26 @@ const Todo = ({ accessToken }) => {
         }
     }, [accessToken]);
 
+    // Edit todo
+    const refreshlisthandler = (id, todoText, todoCompleted) => {
+        const freshList = todoList.map((item) => {
+            if (item.id === id) {
+                return {
+                    id: item.id,
+                    todo: todoText,
+                    isCompleted: todoCompleted,
+                    userId: item.userId,
+                };
+            } else return item;
+        });
+        setTodoList(freshList);
+    };
+
     return (
         <main className="container">
-            <section>
+            <section className="addContainer">
                 <input
+                    type="text"
                     value={addTodoText}
                     onChange={onChangeTodoText}
                     data-testid="new-todo-input"
@@ -65,13 +81,13 @@ const Todo = ({ accessToken }) => {
                 </button>
             </section>
             <section>
-                <ul>
+                <ul className="listContainer">
                     {todoList.map((todo) => (
-                        <li key={todo.id}>
-                            <span>{todo.todo}</span>
-                            <button>수정</button>
-                            <button>삭제</button>
-                        </li>
+                        <TodoItem
+                            key={todo.id}
+                            todo={todo}
+                            refreshlisthandler={refreshlisthandler}
+                        />
                     ))}
                 </ul>
             </section>

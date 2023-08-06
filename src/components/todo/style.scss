@@ -5,4 +5,12 @@
     flex-flow: column;
     align-items: center;
     justify-content: center;
+    .addContainer {
+        width: 14rem;
+        display: flex;
+        justify-content: space-between;
+    }
+    .listContainer {
+        width: 14rem;
+    }
 }

@@ -1,0 +1,9 @@
+.listItem {
+    height: 1.6rem;
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+    .editInput {
+        width: 7rem;
+    }
+}
