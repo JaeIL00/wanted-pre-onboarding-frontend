@@ -64,6 +64,12 @@ const Todo = ({ accessToken }) => {
         setTodoList(freshList);
     };
 
+    // Delete todo
+    const deleteTodoItemHandler = (id) => {
+        const freshList = todoList.filter((todo) => todo.id !== id);
+        setTodoList(freshList);
+    };
+
     return (
         <main className="container">
             <section className="addContainer">
@@ -87,6 +93,7 @@ const Todo = ({ accessToken }) => {
                             key={todo.id}
                             todo={todo}
                             refreshlisthandler={refreshlisthandler}
+                            deleteTodoItemHandler={deleteTodoItemHandler}
                         />
                     ))}
                 </ul>

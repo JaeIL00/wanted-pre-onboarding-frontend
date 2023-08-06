@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./style.scss";
 import debounce from "../../utils/debounce";
 
-const TodoItem = ({ todo, refreshlisthandler }) => {
+const TodoItem = ({ todo, refreshlisthandler, deleteTodoItemHandler }) => {
     const accessTokenRef = useRef("");
 
     const [editTodoText, setEditTodoText] = useState("");
@@ -37,8 +37,8 @@ const TodoItem = ({ todo, refreshlisthandler }) => {
         []
     );
 
-    const onClickEditButton = (todoText, isEdit) => {
-        if (isEdit) {
+    const onClickEditButton = (todoText, state) => {
+        if (state === "수정") {
             setEditTodoText(todoText);
             setIsEdit(true);
         } else {
@@ -72,6 +72,20 @@ const TodoItem = ({ todo, refreshlisthandler }) => {
         }
     };
 
+    const onClickDeleteButton = async (id) => {
+        const response = await axios({
+            baseURL: "https://www.pre-onboarding-selection-task.shop",
+            url: `/todos/${id}`,
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${accessTokenRef.current}`,
+            },
+        });
+        if (response.status === 204) {
+            deleteTodoItemHandler(id);
+        }
+    };
+
     useEffect(() => {
         const accessTokenStorage = localStorage.getItem("access_token");
         accessTokenRef.current = accessTokenStorage;
@@ -101,7 +115,7 @@ const TodoItem = ({ todo, refreshlisthandler }) => {
                             제출
                         </button>
                         <button
-                            onClick={() => onClickEditButton(todo.todo, false)}
+                            onClick={() => onClickEditButton(todo.todo, "취소")}
                             data-testid="cancel-button"
                         >
                             취소
@@ -113,12 +127,17 @@ const TodoItem = ({ todo, refreshlisthandler }) => {
                     <span>{todo.todo}</span>
                     <div>
                         <button
-                            onClick={() => onClickEditButton(todo.todo, true)}
+                            onClick={() => onClickEditButton(todo.todo, "수정")}
                             data-testid="modify-button"
                         >
                             수정
                         </button>
-                        <button data-testid="delete-button">삭제</button>
+                        <button
+                            onClick={() => onClickDeleteButton(todo.id)}
+                            data-testid="delete-button"
+                        >
+                            삭제
+                        </button>
                     </div>
                 </>
             )}
