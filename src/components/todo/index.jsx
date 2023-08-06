@@ -23,9 +23,31 @@ const Todo = ({ accessToken }) => {
         });
         console.log(response);
         if (response.status === 201) {
+            setAddTodoText("");
             setTodoList([...todoList, response.data]);
         }
     };
+
+    // Get todo list
+    useLayoutEffect(() => {
+        if (accessToken) {
+            (async () => {
+                const response = await axios({
+                    baseURL: "https://www.pre-onboarding-selection-task.shop",
+                    url: "/todos",
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    data: { todo: addTodoText },
+                });
+                console.log(response);
+                if (response.status === 200) {
+                    setTodoList(response.data);
+                }
+            })();
+        }
+    }, [accessToken]);
 
     return (
         <main className="container">
@@ -41,6 +63,17 @@ const Todo = ({ accessToken }) => {
                 >
                     추가
                 </button>
+            </section>
+            <section>
+                <ul>
+                    {todoList.map((todo) => (
+                        <li key={todo.id}>
+                            <span>{todo.todo}</span>
+                            <button>수정</button>
+                            <button>삭제</button>
+                        </li>
+                    ))}
+                </ul>
             </section>
         </main>
     );
