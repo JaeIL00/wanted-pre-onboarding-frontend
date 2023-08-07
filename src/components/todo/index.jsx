@@ -14,23 +14,31 @@ const Todo = ({ accessToken }) => {
         setAddTodoText(event.target.value);
     };
     const onClickAddButton = () => {
-        addTodoFetch(accessToken, addTodoText).then((response) => {
-            if (response.status === 201) {
-                setAddTodoText("");
-                setTodoList([...todoList, response.data]);
-            }
-        });
+        addTodoFetch(accessToken, addTodoText)
+            .then((response) => {
+                if (response.status === 201) {
+                    setAddTodoText("");
+                    setTodoList([...todoList, response.data]);
+                }
+            })
+            .catch(() => {
+                alert("추가 재시도 해주세요");
+            });
     };
 
     // Get todo list
     useLayoutEffect(() => {
         if (accessToken) {
             (() => {
-                getTodoFetch(accessToken).then((response) => {
-                    if (response.status === 200) {
-                        setTodoList(response.data);
-                    }
-                });
+                getTodoFetch(accessToken)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            setTodoList(response.data);
+                        }
+                    })
+                    .catch(() => {
+                        alert("투두 리스트 조회 실패");
+                    });
             })();
         }
     }, [accessToken]);

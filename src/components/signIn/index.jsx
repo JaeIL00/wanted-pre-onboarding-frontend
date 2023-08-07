@@ -44,15 +44,20 @@ const SignIn = () => {
 
     // Sign in fetching
     const signInHandler = () => {
-        signInFetch(email, password).then((response) => {
-            if (response.status === 200) {
-                localStorage.setItem(
-                    "access_token",
-                    response.data.access_token
-                );
-                navigate("/todo");
-            }
-        });
+        signInFetch(email, password)
+            .then((response) => {
+                if (response.status === 200) {
+                    localStorage.setItem(
+                        "access_token",
+                        response.data.access_token
+                    );
+                    navigate("/todo");
+                }
+            })
+            .catch(() => {
+                setEmail("");
+                setPassword("");
+            });
     };
 
     return (

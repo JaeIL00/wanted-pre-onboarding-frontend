@@ -44,9 +44,14 @@ const SignUp = () => {
 
     // Sign up fetching
     const signUpHandler = () => {
-        signUpFetch(email, password).then((response) => {
-            if (response.status === 201) navigate("/signin");
-        });
+        signUpFetch(email, password)
+            .then((response) => {
+                if (response.status === 201) navigate("/signin");
+            })
+            .catch(() => {
+                setEmail("");
+                setPassword("");
+            });
     };
 
     return (
