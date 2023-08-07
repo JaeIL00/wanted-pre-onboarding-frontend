@@ -1,8 +1,11 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import debounce from "../../utils/debounce";
 import { signInFetch } from "../../apis";
+import {
+    onChangeEmailValidation,
+    onChangePasswordValidation,
+} from "../../utils/inputValidation";
 
 import "./style.scss";
 
@@ -17,70 +20,6 @@ const SignIn = () => {
         isEmailPassed: false,
         isPasswordPassed: false,
     });
-
-    // Email text handler
-    const onChangeEmail = (event) => {
-        setSignInData((prev) => {
-            return {
-                email: event.target.value,
-                password: prev.password,
-            };
-        });
-        emailValidation(event.target.value);
-    };
-    const emailValidation = useCallback(
-        debounce((email) => {
-            const isPassed = email.includes("@");
-            if (isPassed) {
-                setValidation((prev) => {
-                    return {
-                        isEmailPassed: true,
-                        isPasswordPassed: prev.isPasswordPassed,
-                    };
-                });
-            } else {
-                setValidation((prev) => {
-                    return {
-                        isEmailPassed: false,
-                        isPasswordPassed: prev.isPasswordPassed,
-                    };
-                });
-            }
-        }, 500),
-        []
-    );
-
-    // Password text handler
-    const onChangePassword = (event) => {
-        setSignInData((prev) => {
-            return {
-                email: prev.email,
-                password: event.target.value,
-            };
-        });
-        passwordValidation(event.target.value);
-    };
-    const passwordValidation = useCallback(
-        debounce((password) => {
-            const isPassed = password.length >= 8;
-            if (isPassed) {
-                setValidation((prev) => {
-                    return {
-                        isEmailPassed: prev.isEmailPassed,
-                        isPasswordPassed: true,
-                    };
-                });
-            } else {
-                setValidation((prev) => {
-                    return {
-                        isEmailPassed: prev.isEmailPassed,
-                        isPasswordPassed: false,
-                    };
-                });
-            }
-        }, 500),
-        []
-    );
 
     // Sign in fetching
     const signInHandler = () => {
@@ -115,14 +54,26 @@ const SignIn = () => {
                     <input
                         type="text"
                         value={signInData.email}
-                        onChange={onChangeEmail}
+                        onChange={(event) =>
+                            onChangeEmailValidation(
+                                event.target.value,
+                                setSignInData,
+                                setValidation
+                            )
+                        }
                         placeholder="이메일 입력"
                         data-testid="email-input"
                     />
                     <input
                         type="password"
                         value={signInData.password}
-                        onChange={onChangePassword}
+                        onChange={(event) =>
+                            onChangePasswordValidation(
+                                event.target.value,
+                                setSignInData,
+                                setValidation
+                            )
+                        }
                         placeholder="비밀번호 입력"
                         data-testid="password-input"
                     />
