@@ -13,8 +13,10 @@ const SignUp = () => {
         email: "",
         password: "",
     });
-    const [isEmailPassed, setIsEmailPassed] = useState(false);
-    const [isPasswordPassed, setIsPasswordPassed] = useState(false);
+    const [validation, setValidation] = useState({
+        isEmailPassed: false,
+        isPasswordPassed: false,
+    });
 
     // Email text handler
     const onChangeEmail = (event) => {
@@ -29,8 +31,21 @@ const SignUp = () => {
     const emailValidation = useCallback(
         debounce((email) => {
             const isPassed = email.includes("@");
-            if (isPassed) setIsEmailPassed(true);
-            else setIsEmailPassed(false);
+            if (isPassed) {
+                setValidation((prev) => {
+                    return {
+                        isEmailPassed: true,
+                        isPasswordPassed: prev.isPasswordPassed,
+                    };
+                });
+            } else {
+                setValidation((prev) => {
+                    return {
+                        isEmailPassed: false,
+                        isPasswordPassed: prev.isPasswordPassed,
+                    };
+                });
+            }
         }, 500),
         []
     );
@@ -48,8 +63,21 @@ const SignUp = () => {
     const passwordValidation = useCallback(
         debounce((password) => {
             const isPassed = password.length >= 8;
-            if (isPassed) setIsPasswordPassed(true);
-            else setIsPasswordPassed(false);
+            if (isPassed) {
+                setValidation((prev) => {
+                    return {
+                        isEmailPassed: prev.isEmailPassed,
+                        isPasswordPassed: true,
+                    };
+                });
+            } else {
+                setValidation((prev) => {
+                    return {
+                        isEmailPassed: prev.isEmailPassed,
+                        isPasswordPassed: false,
+                    };
+                });
+            }
         }, 500),
         []
     );
@@ -92,7 +120,12 @@ const SignUp = () => {
                     />
                     <button
                         onClick={signUpHandler}
-                        disabled={!(isEmailPassed && isPasswordPassed)}
+                        disabled={
+                            !(
+                                validation.isEmailPassed &&
+                                validation.isPasswordPassed
+                            )
+                        }
                         data-testid="signup-button"
                     >
                         회원가입
