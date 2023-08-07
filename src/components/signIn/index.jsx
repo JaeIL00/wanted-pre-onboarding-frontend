@@ -9,14 +9,21 @@ import "./style.scss";
 const SignIn = () => {
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [signInData, setSignInData] = useState({
+        email: "",
+        password: "",
+    });
     const [isEmailPassed, setIsEmailPassed] = useState(false);
     const [isPasswordPassed, setIsPasswordPassed] = useState(false);
 
     // Email text handler
     const onChangeEmail = (event) => {
-        setEmail(event.target.value);
+        setSignInData((prev) => {
+            return {
+                email: event.target.value,
+                password: prev.password,
+            };
+        });
         emailValidation(event.target.value);
     };
     const emailValidation = useCallback(
@@ -30,7 +37,12 @@ const SignIn = () => {
 
     // Password text handler
     const onChangePassword = (event) => {
-        setPassword(event.target.value);
+        setSignInData((prev) => {
+            return {
+                email: prev.email,
+                password: event.target.value,
+            };
+        });
         passwordValidation(event.target.value);
     };
     const passwordValidation = useCallback(
@@ -44,7 +56,7 @@ const SignIn = () => {
 
     // Sign in fetching
     const signInHandler = () => {
-        signInFetch(email, password)
+        signInFetch(signInData.email, signInData.password)
             .then((response) => {
                 if (response.status === 200) {
                     localStorage.setItem(
@@ -52,11 +64,16 @@ const SignIn = () => {
                         response.data.access_token
                     );
                     navigate("/todo");
+                } else {
+                    console.log("hihih");
                 }
             })
             .catch(() => {
-                setEmail("");
-                setPassword("");
+                setSignInData({
+                    email: "",
+                    password: "",
+                });
+                alert("로그인 실패");
             });
     };
 
@@ -69,14 +86,14 @@ const SignIn = () => {
                 <section className="formContainer">
                     <input
                         type="text"
-                        value={email}
+                        value={signInData.email}
                         onChange={onChangeEmail}
                         placeholder="이메일 입력"
                         data-testid="email-input"
                     />
                     <input
                         type="password"
-                        value={password}
+                        value={signInData.password}
                         onChange={onChangePassword}
                         placeholder="비밀번호 입력"
                         data-testid="password-input"

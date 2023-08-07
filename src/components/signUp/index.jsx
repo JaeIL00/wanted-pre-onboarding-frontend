@@ -9,14 +9,21 @@ import "./style.scss";
 const SignUp = () => {
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [signUpData, setSignUpData] = useState({
+        email: "",
+        password: "",
+    });
     const [isEmailPassed, setIsEmailPassed] = useState(false);
     const [isPasswordPassed, setIsPasswordPassed] = useState(false);
 
     // Email text handler
     const onChangeEmail = (event) => {
-        setEmail(event.target.value);
+        setSignUpData((prev) => {
+            return {
+                email: event.target.value,
+                password: prev.password,
+            };
+        });
         emailValidation(event.target.value);
     };
     const emailValidation = useCallback(
@@ -30,7 +37,12 @@ const SignUp = () => {
 
     // Password text handler
     const onChangePassword = (event) => {
-        setPassword(event.target.value);
+        setSignUpData((prev) => {
+            return {
+                email: prev.email,
+                password: event.target.value,
+            };
+        });
         passwordValidation(event.target.value);
     };
     const passwordValidation = useCallback(
@@ -44,13 +56,16 @@ const SignUp = () => {
 
     // Sign up fetching
     const signUpHandler = () => {
-        signUpFetch(email, password)
+        signUpFetch(signUpData.email, signUpData.password)
             .then((response) => {
                 if (response.status === 201) navigate("/signin");
             })
             .catch(() => {
-                setEmail("");
-                setPassword("");
+                setSignUpData({
+                    email: "",
+                    password: "",
+                });
+                alert("회원가입 실패");
             });
     };
 
@@ -63,14 +78,14 @@ const SignUp = () => {
                 <section className="formContainer">
                     <input
                         type="text"
-                        value={email}
+                        value={signUpData.email}
                         onChange={onChangeEmail}
                         placeholder="이메일 입력"
                         data-testid="email-input"
                     />
                     <input
                         type="password"
-                        value={password}
+                        value={signUpData.password}
                         onChange={onChangePassword}
                         placeholder="비밀번호 입력"
                         data-testid="password-input"
