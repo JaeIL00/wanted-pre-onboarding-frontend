@@ -5,6 +5,10 @@
     flex-flow: column;
     align-items: center;
     justify-content: center;
+    .title {
+        font-size: 2rem;
+        margin-bottom: 0.3rem;
+    }
     .addContainer {
         width: 14rem;
         display: flex;

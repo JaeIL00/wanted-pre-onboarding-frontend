@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "./style.scss";
 import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
@@ -57,40 +57,37 @@ const SignIn = () => {
         }
     };
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem("access_token");
-        if (accessToken) navigate("/todo");
-    }, []);
-
     return (
-        <main className="container">
+        <>
             <header>
                 <h1 className="title">로그인</h1>
             </header>
-            <section className="formContainer">
-                <input
-                    type="text"
-                    value={email}
-                    onChange={onChangeEmail}
-                    placeholder="이메일 입력"
-                    data-testid="email-input"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={onChangePassword}
-                    placeholder="비밀번호 입력"
-                    data-testid="password-input"
-                />
-                <button
-                    onClick={signInHandler}
-                    disabled={!(isEmailPassed && isPasswordPassed)}
-                    data-testid="signin-button"
-                >
-                    로그인
-                </button>
-            </section>
-        </main>
+            <main className="container">
+                <section className="formContainer">
+                    <input
+                        type="text"
+                        value={email}
+                        onChange={onChangeEmail}
+                        placeholder="이메일 입력"
+                        data-testid="email-input"
+                    />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={onChangePassword}
+                        placeholder="비밀번호 입력"
+                        data-testid="password-input"
+                    />
+                    <button
+                        onClick={signInHandler}
+                        disabled={!(isEmailPassed && isPasswordPassed)}
+                        data-testid="signin-button"
+                    >
+                        로그인
+                    </button>
+                </section>
+            </main>
+        </>
     );
 };
 

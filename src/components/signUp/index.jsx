@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -55,40 +55,37 @@ const SignUp = () => {
         if (response.status === 201) navigate("/signin");
     };
 
-    useEffect(() => {
-        const accessToken = localStorage.getItem("access_token");
-        if (accessToken) navigate("/todo");
-    }, []);
-
     return (
-        <main className="container">
+        <>
             <header>
                 <h1 className="title">회원가입</h1>
             </header>
-            <section className="formContainer">
-                <input
-                    type="text"
-                    value={email}
-                    onChange={onChangeEmail}
-                    placeholder="이메일 입력"
-                    data-testid="email-input"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={onChangePassword}
-                    placeholder="비밀번호 입력"
-                    data-testid="password-input"
-                />
-                <button
-                    onClick={signUpHandler}
-                    disabled={!(isEmailPassed && isPasswordPassed)}
-                    data-testid="signup-button"
-                >
-                    회원가입
-                </button>
-            </section>
-        </main>
+            <main className="container">
+                <section className="formContainer">
+                    <input
+                        type="text"
+                        value={email}
+                        onChange={onChangeEmail}
+                        placeholder="이메일 입력"
+                        data-testid="email-input"
+                    />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={onChangePassword}
+                        placeholder="비밀번호 입력"
+                        data-testid="password-input"
+                    />
+                    <button
+                        onClick={signUpHandler}
+                        disabled={!(isEmailPassed && isPasswordPassed)}
+                        data-testid="signup-button"
+                    >
+                        회원가입
+                    </button>
+                </section>
+            </main>
+        </>
     );
 };
 

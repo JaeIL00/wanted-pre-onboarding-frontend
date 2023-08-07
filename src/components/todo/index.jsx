@@ -22,7 +22,6 @@ const Todo = ({ accessToken }) => {
             },
             data: { todo: addTodoText },
         });
-        console.log(response);
         if (response.status === 201) {
             setAddTodoText("");
             setTodoList([...todoList, response.data]);
@@ -71,34 +70,39 @@ const Todo = ({ accessToken }) => {
     };
 
     return (
-        <main className="container">
-            <section className="addContainer">
-                <input
-                    type="text"
-                    value={addTodoText}
-                    onChange={onChangeTodoText}
-                    data-testid="new-todo-input"
-                />
-                <button
-                    onClick={onClickAddButton}
-                    data-testid="new-todo-add-button"
-                >
-                    추가
-                </button>
-            </section>
-            <section>
-                <ul className="listContainer">
-                    {todoList.map((todo) => (
-                        <TodoItem
-                            key={todo.id}
-                            todo={todo}
-                            refreshlisthandler={refreshlisthandler}
-                            deleteTodoItemHandler={deleteTodoItemHandler}
-                        />
-                    ))}
-                </ul>
-            </section>
-        </main>
+        <div className="container">
+            <header>
+                <h1 className="title">TODO</h1>
+            </header>
+            <main>
+                <section className="addContainer">
+                    <input
+                        type="text"
+                        value={addTodoText}
+                        onChange={onChangeTodoText}
+                        data-testid="new-todo-input"
+                    />
+                    <button
+                        onClick={onClickAddButton}
+                        data-testid="new-todo-add-button"
+                    >
+                        추가
+                    </button>
+                </section>
+                <section>
+                    <ul className="listContainer">
+                        {todoList.map((todo) => (
+                            <TodoItem
+                                key={todo.id}
+                                todo={todo}
+                                refreshlisthandler={refreshlisthandler}
+                                deleteTodoItemHandler={deleteTodoItemHandler}
+                            />
+                        ))}
+                    </ul>
+                </section>
+            </main>
+        </div>
     );
 };
 
