@@ -1,9 +1,10 @@
 import { useCallback, useState } from "react";
-import "./style.scss";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import debounce from "../../utils/debounce";
+import { signUpFetch } from "../../apis";
+
+import "./style.scss";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const SignUp = () => {
     const [isEmailPassed, setIsEmailPassed] = useState(false);
     const [isPasswordPassed, setIsPasswordPassed] = useState(false);
 
+    // Email text handler
     const onChangeEmail = (event) => {
         setEmail(event.target.value);
         emailValidation(event.target.value);
@@ -26,6 +28,7 @@ const SignUp = () => {
         []
     );
 
+    // Password text handler
     const onChangePassword = (event) => {
         setPassword(event.target.value);
         passwordValidation(event.target.value);
@@ -39,28 +42,19 @@ const SignUp = () => {
         []
     );
 
-    const signUpHandler = async () => {
-        const response = await axios({
-            baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: "/auth/signup",
-            method: "POST",
-            headers: {
-                ContentType: "application/json",
-            },
-            data: {
-                email,
-                password,
-            },
+    // Sign up fetching
+    const signUpHandler = () => {
+        signUpFetch(email, password).then((response) => {
+            if (response.status === 201) navigate("/signin");
         });
-        if (response.status === 201) navigate("/signin");
     };
 
     return (
-        <>
+        <div className="container">
             <header>
                 <h1 className="title">회원가입</h1>
             </header>
-            <main className="container">
+            <main>
                 <section className="formContainer">
                     <input
                         type="text"
@@ -85,7 +79,7 @@ const SignUp = () => {
                     </button>
                 </section>
             </main>
-        </>
+        </div>
     );
 };
 

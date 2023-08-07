@@ -1,42 +1,39 @@
-import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
-import "./style.scss";
-import debounce from "../../utils/debounce";
 
-const TodoItem = ({ todo, refreshlisthandler, deleteTodoItemHandler }) => {
+import debounce from "../../utils/debounce";
+import { deleteTodoFetch, editTodoFetch } from "../../apis";
+
+import "./style.scss";
+
+const TodoItem = ({ todo, refreshListhandler, deleteTodoItemHandler }) => {
     const accessTokenRef = useRef("");
 
     const [editTodoText, setEditTodoText] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [isCheck, setIsCheck] = useState(todo.isCompleted);
 
+    // Checkbox handler
     const onChangeEditChecked = (event, id) => {
         setIsCheck(event.target.checked);
         putTodoCompleted(event, id);
     };
-
     const putTodoCompleted = useCallback(
-        debounce(async (event, id) => {
-            const response = await axios({
-                baseURL: "https://www.pre-onboarding-selection-task.shop",
-                url: `/todos/${id}`,
-                method: "PUT",
-                headers: {
-                    ContentType: "application/json",
-                    Authorization: `Bearer ${accessTokenRef.current}`,
-                },
-                data: {
-                    todo: todo.todo,
-                    isCompleted: event.target.checked,
-                },
+        debounce((event, id) => {
+            editTodoFetch(
+                accessTokenRef.current,
+                id,
+                todo.todo,
+                event.target.checked
+            ).then((response) => {
+                if (response.status === 200) {
+                    setIsCheck(response.data.isCompleted);
+                }
             });
-            if (response.status === 200) {
-                setIsCheck(response.data.isCompleted);
-            }
         }, 500),
         []
     );
 
+    // Edit handler
     const onClickEditButton = (todoText, state) => {
         if (state === "수정") {
             setEditTodoText(todoText);
@@ -48,44 +45,31 @@ const TodoItem = ({ todo, refreshlisthandler, deleteTodoItemHandler }) => {
     const onChangeEditText = (event) => {
         setEditTodoText(event.target.value);
     };
-    const onClickEditRequest = async (id) => {
-        const response = await axios({
-            baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: `/todos/${id}`,
-            method: "PUT",
-            headers: {
-                ContentType: "application/json",
-                Authorization: `Bearer ${accessTokenRef.current}`,
-            },
-            data: {
-                todo: editTodoText,
-                isCompleted: isCheck,
-            },
-        });
-        if (response.status === 200) {
-            setIsEdit(false);
-            refreshlisthandler(
-                response.data.id,
-                response.data.todo,
-                response.data.isCompleted
-            );
-        }
+    const onClickEditRequest = (id) => {
+        editTodoFetch(accessTokenRef.current, id, editTodoText, isCheck).then(
+            (response) => {
+                if (response.status === 200) {
+                    setIsEdit(false);
+                    refreshListhandler(
+                        response.data.id,
+                        response.data.todo,
+                        response.data.isCompleted
+                    );
+                }
+            }
+        );
     };
 
-    const onClickDeleteButton = async (id) => {
-        const response = await axios({
-            baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: `/todos/${id}`,
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${accessTokenRef.current}`,
-            },
+    //Delete handler
+    const onClickDeleteButton = (id) => {
+        deleteTodoFetch(accessTokenRef.current, id).then((response) => {
+            if (response.status === 204) {
+                deleteTodoItemHandler(id);
+            }
         });
-        if (response.status === 204) {
-            deleteTodoItemHandler(id);
-        }
     };
 
+    // Get access token
     useEffect(() => {
         const accessTokenStorage = localStorage.getItem("access_token");
         accessTokenRef.current = accessTokenStorage;

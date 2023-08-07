@@ -1,7 +1,9 @@
 import { useLayoutEffect, useState } from "react";
-import "./style.scss";
-import axios from "axios";
+
 import TodoItem from "../todoItem";
+import { addTodoFetch, getTodoFetch } from "../../apis";
+
+import "./style.scss";
 
 const Todo = ({ accessToken }) => {
     const [addTodoText, setAddTodoText] = useState("");
@@ -11,45 +13,30 @@ const Todo = ({ accessToken }) => {
     const onChangeTodoText = (event) => {
         setAddTodoText(event.target.value);
     };
-    const onClickAddButton = async () => {
-        const response = await axios({
-            baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: "/todos",
-            method: "POST",
-            headers: {
-                ContentType: "application/json",
-                Authorization: `Bearer ${accessToken}`,
-            },
-            data: { todo: addTodoText },
+    const onClickAddButton = () => {
+        addTodoFetch(accessToken, addTodoText).then((response) => {
+            if (response.status === 201) {
+                setAddTodoText("");
+                setTodoList([...todoList, response.data]);
+            }
         });
-        if (response.status === 201) {
-            setAddTodoText("");
-            setTodoList([...todoList, response.data]);
-        }
     };
 
     // Get todo list
     useLayoutEffect(() => {
         if (accessToken) {
-            (async () => {
-                const response = await axios({
-                    baseURL: "https://www.pre-onboarding-selection-task.shop",
-                    url: "/todos",
-                    method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                    data: { todo: addTodoText },
+            (() => {
+                getTodoFetch(accessToken).then((response) => {
+                    if (response.status === 200) {
+                        setTodoList(response.data);
+                    }
                 });
-                if (response.status === 200) {
-                    setTodoList(response.data);
-                }
             })();
         }
     }, [accessToken]);
 
     // Edit todo
-    const refreshlisthandler = (id, todoText, todoCompleted) => {
+    const refreshListhandler = (id, todoText, todoCompleted) => {
         const freshList = todoList.map((item) => {
             if (item.id === id) {
                 return {
@@ -95,7 +82,7 @@ const Todo = ({ accessToken }) => {
                             <TodoItem
                                 key={todo.id}
                                 todo={todo}
-                                refreshlisthandler={refreshlisthandler}
+                                refreshListhandler={refreshListhandler}
                                 deleteTodoItemHandler={deleteTodoItemHandler}
                             />
                         ))}

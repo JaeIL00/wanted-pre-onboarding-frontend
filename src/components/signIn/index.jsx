@@ -1,8 +1,10 @@
 import { useCallback, useState } from "react";
-import "./style.scss";
-import debounce from "../../utils/debounce";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
+import debounce from "../../utils/debounce";
+import { signInFetch } from "../../apis";
+
+import "./style.scss";
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const SignIn = () => {
     const [isEmailPassed, setIsEmailPassed] = useState(false);
     const [isPasswordPassed, setIsPasswordPassed] = useState(false);
 
+    // Email text handler
     const onChangeEmail = (event) => {
         setEmail(event.target.value);
         emailValidation(event.target.value);
@@ -25,6 +28,7 @@ const SignIn = () => {
         []
     );
 
+    // Password text handler
     const onChangePassword = (event) => {
         setPassword(event.target.value);
         passwordValidation(event.target.value);
@@ -38,31 +42,25 @@ const SignIn = () => {
         []
     );
 
-    const signInHandler = async () => {
-        const response = await axios({
-            baseURL: "https://www.pre-onboarding-selection-task.shop",
-            url: "/auth/signin",
-            method: "POST",
-            headers: {
-                ContentType: "application/json",
-            },
-            data: {
-                email,
-                password,
-            },
+    // Sign in fetching
+    const signInHandler = () => {
+        signInFetch(email, password).then((response) => {
+            if (response.status === 200) {
+                localStorage.setItem(
+                    "access_token",
+                    response.data.access_token
+                );
+                navigate("/todo");
+            }
         });
-        if (response.status === 200) {
-            localStorage.setItem("access_token", response.data.access_token);
-            navigate("/todo");
-        }
     };
 
     return (
-        <>
+        <div className="container">
             <header>
                 <h1 className="title">로그인</h1>
             </header>
-            <main className="container">
+            <main>
                 <section className="formContainer">
                     <input
                         type="text"
@@ -87,7 +85,7 @@ const SignIn = () => {
                     </button>
                 </section>
             </main>
-        </>
+        </div>
     );
 };
 
